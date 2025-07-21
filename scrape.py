@@ -44,3 +44,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+- name: Upload large_bets.csv as artifact
+  uses: actions/upload-artifact@v3
+  with:
+    name: polymarket-large-bets
+    path: large_bets.csv
