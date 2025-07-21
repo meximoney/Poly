@@ -3,7 +3,7 @@ name: Run Polymarket REST Scraper
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 * * * *'  # every hour UTC
 
 jobs:
   run-script:
@@ -25,7 +25,7 @@ jobs:
       - name: Run scraper script
         run: python scrape.py
 
-      - name: List all files (debug)
+      - name: 🔍 List all files (debug)
         run: ls -la
 
       - name: Upload CSV as artifact
