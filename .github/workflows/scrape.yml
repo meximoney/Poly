@@ -1,15 +1,15 @@
-name: Run Polymarket Scraper
+name: Run Scraper
 
 on:
+  workflow_dispatch:  # Allows manual trigger from Actions tab
   schedule:
-    - cron: '0 * * * *'  # every hour
-  workflow_dispatch:
+    - cron: '0 * * * *'  # Every hour UTC
 
 jobs:
-  run-script:
+  run:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -20,5 +20,5 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Run scraper
+      - name: Run script
         run: python scrape.py
