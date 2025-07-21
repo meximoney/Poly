@@ -20,9 +20,9 @@ def scrape_large_trades(hours=6, size_threshold=500.0):
         size = float(t["size"])
         if t_time > cutoff and size >= size_threshold:
             large.append({
-                "marketId": t["marketId"],
-                "side": t["side"],
-                "price": t["price"],
+                "marketId": t.get("marketId", "N/A"),
+                "side": t.get("side", "N/A"),
+                "price": t.get("price", "N/A"),
                 "size": size,
                 "timestamp": t_time.isoformat(),
             })
