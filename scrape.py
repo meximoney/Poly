@@ -30,6 +30,10 @@ def fetch_market_title(market_id, cache):
 def scrape_large_trades(hours=6, size_threshold=500.0):
     cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
     all_trades = fetch_trades(limit=500)
+    print("📦 Sample Trade Object:")
+print(all_trades[0])  # Just the first trade
+exit()  # Temporarily stop the script after this
+
     large = []
     title_cache = {}
 
