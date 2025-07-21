@@ -1,15 +1,17 @@
-name: Run Scraper
+name: Run Polymarket REST Scraper
 
 on:
-  workflow_dispatch:  # Allows manual trigger from Actions tab
+  workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'  # Every hour UTC
+    - cron: '0 * * * *'  # every hour UTC
 
 jobs:
-  run:
+  run-script:
     runs-on: ubuntu-latest
+    fail-fast: false
+
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -20,5 +22,14 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Run script
+      - name: Run scraper script
         run: python scrape.py
+
+      - name: 🔍 List all files (debug)
+        run: ls -la
+
+      - name: Upload CSV as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: polymarket-large-bets
+          path: large_bets.csv
