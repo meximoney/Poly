@@ -3,12 +3,11 @@ name: Run Polymarket REST Scraper
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'  # every hour UTC
+    - cron: '0 * * * *'  # Every hour UTC
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
-    fail-fast: false
 
     steps:
       - name: Checkout repo
