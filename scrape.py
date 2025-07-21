@@ -3,29 +3,52 @@ import csv
 from datetime import datetime, timedelta, timezone
 import os
 
-API_URL = "https://data-api.polymarket.com/trades"
+TRADE_API = "https://data-api.polymarket.com/trades"
+MARKET_API = "https://data-api.polymarket.com/markets/"
 
 def fetch_trades(limit=500, offset=0):
     params = {"limit": limit, "offset": offset}
-    resp = requests.get(API_URL, params=params)
+    resp = requests.get(TRADE_API, params=params)
     resp.raise_for_status()
     return resp.json()
+
+def fetch_market_title(market_id, cache):
+    if market_id in cache:
+        return cache[market_id]
+
+    try:
+        resp = requests.get(MARKET_API + market_id)
+        resp.raise_for_status()
+        data = resp.json()
+        title = data.get("question", "Unknown Market")
+    except Exception:
+        title = "Unavailable"
+
+    cache[market_id] = title
+    return title
 
 def scrape_large_trades(hours=6, size_threshold=500.0):
     cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
     all_trades = fetch_trades(limit=500)
     large = []
+    title_cache = {}
+
     for t in all_trades:
         t_time = datetime.fromtimestamp(t["timestamp"], tz=timezone.utc)
         size = float(t["size"])
         if t_time > cutoff and size >= size_threshold:
+            market_id = t.get("marketId", "N/A")
+            title = fetch_market_title(market_id, title_cache)
+
             large.append({
-                "marketId": t.get("marketId", "N/A"),
+                "marketId": market_id,
+                "event": title,
                 "side": t.get("side", "N/A"),
                 "price": t.get("price", "N/A"),
                 "size": size,
                 "timestamp": t_time.isoformat(),
             })
+
     return sorted(large, key=lambda x: -x["size"])
 
 def write_csv(trades, filename="large_bets.csv"):
