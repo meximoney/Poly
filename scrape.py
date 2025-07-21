@@ -1,13 +1,14 @@
 name: Run Polymarket REST Scraper
 
 on:
-  workflow_dispatch:     # Allows manual run
+  workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'  # Every hour UTC
+    - cron: '0 * * * *'
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
+    fail-fast: false
 
     steps:
       - name: Checkout repo
@@ -24,10 +25,10 @@ jobs:
       - name: Run scraper script
         run: python scrape.py
 
-      - name: List files (debug step)
-        run: ls -l
+      - name: List all files (debug)
+        run: ls -la
 
-      - name: Upload CSV file as artifact
+      - name: Upload CSV as artifact
         uses: actions/upload-artifact@v3
         with:
           name: polymarket-large-bets
